@@ -1,12 +1,15 @@
 import {useState} from "react";
+import {useBibleContext} from "../store/BibleContext.jsx";
 
 export const Starter = () => {
     const [inputValue, setInputValue] = useState('');
     const [messages, setMessages] = useState([]);
 
+    const {getRandomVerse} = useBibleContext();
+
     const onSubmit = (e) => {
         e.preventDefault();
-        setMessages(old => [...old, {type: 'user', text: inputValue}]);
+        setMessages(old => [...old, {type: 'user', text: inputValue}, {type: 'bot', ...getRandomVerse()}]);
         setInputValue('');
     }
 
@@ -18,9 +21,10 @@ export const Starter = () => {
             <div
                 className='my-8 max-h-[80%] overflow-y-auto'
             >
-                {messages.map(({type, text}) => (
+                {messages.map(({type, text}, index) => (
                     <div
                         className="bg-stone-100 rounded-lg my-4 px-6 py-2"
+                        key={index}
                     >
                         {type}: {text}
                     </div>
