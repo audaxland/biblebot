@@ -32,7 +32,7 @@ const parquetFilePath = dataDir + '/bible.parquet';
     })
     logger('Vectorization completed.')
 
-    await writeParquetFile(inputData, vectors, parquetFilePath, (i, item) => {if (i%1000 === 0) logger(i + ' rows written in parquet file.')});
+    await writeParquetFile(inputData, vectors, parquetFilePath, (i, item) => {if (i%10000 === 0) logger(i + ' rows written in parquet file.')});
     logger('Parquet file created.')
 
 

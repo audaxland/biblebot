@@ -56,10 +56,9 @@ export const getVectors = async ({
 }
 
 const combineItemAndVector = (item, vector) => {
-    const flatVector = vector.reduce((prev, curr, index) => ({
-        ...prev, ['v_' + index]: curr
-    }), {});
-    return {...item, ...flatVector}
+    const combinedItem = {...item}
+    vector.forEach((v,index) => {combinedItem['v_' + index] = v})
+    return combinedItem
 }
 
 

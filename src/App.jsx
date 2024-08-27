@@ -1,18 +1,17 @@
 import './App.css'
 import Starter from "./components/Starter.jsx";
 import {useBibleContext} from "./store/BibleContext.jsx";
+import LoadingScreen from "./components/LoadingScreen.jsx";
 
 function App() {
     const {isLoading, errors} = useBibleContext()
 
     return (
         <div
-            className="flex flex-col justify-center items-center w-full h-screen"
+            className="flex flex-col justify-center items-center w-full h-screen "
         >
             {isLoading && (errors.length === 0) && (
-                <div className="text-2xl font-bold text-stone-800">
-                    Loading...
-                </div>
+                <LoadingScreen />
             )}
             {(!isLoading) && (errors.length === 0) && (
                 <Starter />
