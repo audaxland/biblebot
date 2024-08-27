@@ -1,7 +1,7 @@
 import './App.css'
-import Starter from "./components/Starter.jsx";
 import {useBibleContext} from "./store/BibleContext.jsx";
 import LoadingScreen from "./components/LoadingScreen.jsx";
+import ChatUi from "./components/ChatUi.jsx";
 
 function App() {
     const {isLoading, errors} = useBibleContext()
@@ -14,7 +14,7 @@ function App() {
                 <LoadingScreen />
             )}
             {(!isLoading) && (errors.length === 0) && (
-                <Starter />
+                <ChatUi />
             )}
             {(errors.length > 0) && (
                 <div className="text-xl font-bold text-stone-800">

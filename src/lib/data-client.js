@@ -1,4 +1,5 @@
 import {asyncBufferFromUrl, parquetRead} from "hyparquet";
+import { compressors } from 'hyparquet-compressors'
 import * as tf from "@tensorflow/tfjs";
 
 
@@ -8,6 +9,7 @@ export const getParquetData = async url => {
     await parquetRead({
         file: await asyncBufferFromUrl(url),
         rowFormat: 'object',
+        compressors,
         onComplete: parquetData => {
             vectorData = parquetData.map(row => {
                 if (!format) {
