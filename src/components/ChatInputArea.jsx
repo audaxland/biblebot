@@ -20,12 +20,13 @@ const ChatInputArea = ({onSend}) => {
             onSubmit={onSubmit}
         >
             <textarea
-                className={"flex-1 p-2 rounded-lg min-h-20 text-lg " +
+                className={"flex-1 px-4 py-2 rounded-lg min-h-20 text-lg bg-white/80" +
                     " disabled:text-stone-500"}
                 onChange={e=>setInput(e.target.value)}
                 onKeyUp={e=> e.key === 'Enter' && onSubmit(e)}
                 disabled={sending}
                 value={input}
+                placeholder="Ask anything..."
             ></textarea>
             <button
                 className={"bg-gradient-to-tr from-indigo-500 to-blue-600  text-white relative " +

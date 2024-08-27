@@ -43,3 +43,7 @@ npm run preview
 ```
 
 - Check the prod app via your browser at http://localhost:4173/
+
+# Screenshot
+
+![BibleBot Screenshot](biblebotScreenshot.jpg)

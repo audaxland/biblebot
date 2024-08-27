@@ -30,6 +30,12 @@ export const ChatUi = () => {
                     <h1>BibleBot</h1>
                 </div>
                 <div className={"flex-1 px-4 overflow-auto h-fit"} >
+                    {(messages.length === 0) && (
+                        <div className={"flex flex-col w-full h-full items-center justify-center text-2xl"}>
+                            Ask anything.... <br />
+                            ...BibleBot will respond with a verse from the Bible.
+                        </div>
+                    )}
                     {messages.map(({type, ...rest}, index) => {
                         if (type === "bot") return <BotMessage key={index} {...rest} />
                         return <UserMessage key={index} {...rest} />
