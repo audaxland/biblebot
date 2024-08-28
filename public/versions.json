@@ -1,0 +1,11 @@
+{
+  "timeStamp": 1724865808203,
+  "files": {
+    "bible.json": {
+      "sha256hex": "dd229d3d0c8ffdaf1ac954c1abf87f53e4e30d538f4273107c99b3ee2b84f8c9"
+    },
+    "bible.parquet": {
+      "sha256hex": "fe5da00b94cd661bf697c9bd0ab97b3f0b811e57c47ba2222e7e41083d098696"
+    }
+  }
+}

@@ -1,8 +1,17 @@
+/**
+ * JavaScript helper functions used in the browser.
+ */
 import {asyncBufferFromUrl, parquetRead} from "hyparquet";
 import { compressors } from 'hyparquet-compressors'
 import * as tf from "@tensorflow/tfjs";
 
 
+/**
+ * Retrieves Parquet data from the specified URL.
+ * 
+ * @param {string} url - The URL of the Parquet file.
+ * @returns {Promise<Array<Object>>} - A promise that resolves to an array of objects {item, vector} representing the Parquet data.
+ */
 export const getParquetData = async url => {
     let vectorData = null
     let format = null
@@ -29,6 +38,14 @@ export const getParquetData = async url => {
 }
 
 
+/**
+ * Retrieves the index of the best vector in the given array of vectors that is most similar to the provided query.
+ *
+ * @param {Object} model - The model used for embedding.
+ * @param {Array} vectors - The array of vectors to compare against the query.
+ * @param {string} query - The query to compare against the vectors.
+ * @returns {Promise<number>} The index of the best vector found in the vectors array.
+ */
 export const getBestVector = async (model, vectors, query) => {
     const queryVector = await model.embed(query);
     const bestVectorIndex = tf.tidy(() => {

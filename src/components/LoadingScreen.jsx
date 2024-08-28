@@ -2,6 +2,12 @@ import WrapperLayout from "./WrapperLayout";
 import {BarLoader} from "react-spinners";
 
 
+/**
+ * Renders a loading screen component.
+ * This is rendered while the app is fetching and loading the data from the server.
+ *
+ * @returns {JSX.Element} The loading screen component.
+ */
 function LoadingScreen() {
     return (
         <div className="w-[40em] ">

@@ -1,18 +1,58 @@
-import {useState} from "react";
+import { useEffect } from "react";
+import {useState, useRef} from "react";
 import {BsSendFill} from "react-icons/bs";
 import {ClipLoader} from "react-spinners";
 
+/**
+ * ChatInputArea component.
+ * 
+ * @component
+ * @param {Object} props - The component props.
+ * @param {Function} props.onSend - The function to be called when sending a message.
+ * @returns {JSX.Element} The rendered ChatInputArea component.
+ */
 const ChatInputArea = ({onSend}) => {
+    /**
+     * @type {string} input - The user input in the texarea.
+     */
     const [input, setInput] = useState('');
+
+    /**
+     * @type {boolean} sending - A flag to indicate if the message is being sent.
+     */
     const [sending, setSending] = useState(false);
 
+    /**
+     * @type {React.RefObject<HTMLTextAreaElement>} inputRef - Ref to the input textarea, used to set the focus on the input.
+     */
+    const inputRef = useRef(null);
+
+    
+    /**
+     * Handles the form submission event.
+     * @param {Event} e - The form submission event.
+     * @returns {Promise<void>}
+     */
     const onSubmit = async (e) => {
         e.preventDefault();
         setSending(true);
+        // the onSend function handles the submission at the parent level.
         onSend && await onSend(input);
         setInput('');
-        setSending(false);
+        setSending(false);        
     }
+
+    /**
+     * Focus on the input textarea when finished handling the previous prompt.
+     */
+    useEffect(() => {
+        if ((!sending) && inputRef.current) {
+            setTimeout(() => {
+                inputRef.current.focus();
+                console.log('focus');
+            }, 100);
+        }
+    }, [sending])
 
     return (
         <form
@@ -27,6 +67,7 @@ const ChatInputArea = ({onSend}) => {
                 disabled={sending}
                 value={input}
                 placeholder="Ask anything..."
+                ref={inputRef}
             ></textarea>
             <button
                 className={"bg-gradient-to-tr from-indigo-500 to-blue-600  text-white relative " +
@@ -40,6 +81,8 @@ const ChatInputArea = ({onSend}) => {
                     <BsSendFill size={"2em"} />
                     Send
                 </>)}
+
+                {/* spinner to render while handing the submitted prompt */}
                 {sending && (<>
                     <div><ClipLoader color={"silver"} size={'2em'}/></div>
                     Sending
