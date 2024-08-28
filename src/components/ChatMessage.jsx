@@ -1,4 +1,3 @@
-
 /**
  * Renders a chat message in the section of the ui that renders the conversation.
  * This is a generic component that is used for both the user promts and the bot responses, 
@@ -22,10 +21,14 @@ const ChatMessage = ({
 }) => {
     return (
         <div
-            className={"flex gap-4 m-4 text-lg " +
+            className={"flex gap-2 sm:gap-4 m-2 sm:m-4 text-md md:text-lg " +
                 (orientation === 'left' ? ' flex-row ' : ' flex-row-reverse ')}
         >
-            <div>{avatar}</div>
+            <div>
+                <div className={"bg-orange-100/50 p-1 sm:p-3 rounded-full text-md sm:text-xl md:text-3xl "}>
+                    {avatar}
+                </div>
+            </div>
             <div
                 className={"to-stone-100/80 py-2 px-3 max-w-[80%] rounded-lg border border-stone-300/90 " +
                     (orientation === 'left' ? ' bg-gradient-to-tr ' : ' bg-gradient-to-tl ')

@@ -9,7 +9,7 @@ import * as encoder from '@tensorflow-models/universal-sentence-encoder';
 import * as tf from '@tensorflow/tfjs';
 
 
-// The url where the vecotr file is located.
+// The url where the vector file is located.
 const dataFile = '/data/bible.parquet';
 
 
@@ -22,7 +22,7 @@ const dataFile = '/data/bible.parquet';
  */
 export const BibleContext = createContext({
     isLoading: true,
-    getResponseFor: () => {},
+    getResponseFor: async text => {},
     error: [],
 });
 
@@ -57,8 +57,10 @@ export const BibleContextProvider = ({children}) => {
      */
     const [errors, setErrors] = useState([])
 
+    /** Fetch and load the vector file from the server, and load the model */
     useEffect(() => {
         (async () => {
+            setIsLoading(true)
             try {
                 await Promise.all([
                     (async () => {setData((await getParquetData(dataFile)))})(), // fetch the vector data file
@@ -72,7 +74,7 @@ export const BibleContextProvider = ({children}) => {
             setIsLoading(false)
         })();
 
-        // the model contains tensoflow tensors that the garbage collector does not necessarily handle correctly,
+        // the model contains tensorflow tensors that the garbage collector does not necessarily handle correctly,
         // so we need to dispose of them manually when the component is unmounted.
         return () => tf.disposeVariables();
     }, [])

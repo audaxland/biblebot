@@ -13,7 +13,7 @@ import {ClipLoader} from "react-spinners";
  */
 const ChatInputArea = ({onSend}) => {
     /**
-     * @type {string} input - The user input in the texarea.
+     * @type {string} input - The user input in the textarea.
      */
     const [input, setInput] = useState('');
 
@@ -49,19 +49,18 @@ const ChatInputArea = ({onSend}) => {
         if ((!sending) && inputRef.current) {
             setTimeout(() => {
                 inputRef.current.focus();
-                console.log('focus');
             }, 100);
         }
     }, [sending])
 
     return (
         <form
-            className={"flex flex-row gap-4 px-5 py-2"}
+            className={"flex flex-col sm:flex-row gap-2 sm:gap-4 px-1 sm:px-2 md:px-5 py-1 sm:py-2"}
             onSubmit={onSubmit}
         >
             <textarea
-                className={"flex-1 px-4 py-2 rounded-lg min-h-20 text-lg bg-white/80" +
-                    " disabled:text-stone-500"}
+                className={"flex-1 px-4 py-2 rounded-lg min-h-5 sm:min-h-20 text-sm md:text-lg bg-white/80 " +
+                    " shadow-md shadow-stone-800 disabled:text-stone-500"}
                 onChange={e=>setInput(e.target.value)}
                 onKeyUp={e=> e.key === 'Enter' && onSubmit(e)}
                 disabled={sending}
@@ -70,15 +69,17 @@ const ChatInputArea = ({onSend}) => {
                 ref={inputRef}
             ></textarea>
             <button
-                className={"bg-gradient-to-tr from-indigo-500 to-blue-600  text-white relative " +
-                    " flex flex-col items-center justify-center font-bold min-w-24" +
-                    " hover:bg-gradient-to-bl hover:-top-0.5 hover:border-white/70 " +
+                className={
+                    "bg-gradient-to-tr from-indigo-500 to-blue-600  text-white relative rounded-lg p-2 " +
+                    "border border-indigo-700 text-sm sm:text-md md:text-lg md:min-w-24 gap-1 " +
+                    " flex flex-row sm:flex-col items-center justify-center font-bold shadow-md shadow-indigo-900 " +
+                    " hover:bg-gradient-to-bl hover:-top-0.5 hover:border-white/70 hover:shadow-indigo-200" +
                     " disabled:to-stone-600 disabled:from-slate-500 disabled:border-0 disabled:text-stone-300 "
                 }
                 disabled={sending}
             >
                 {sending || (<>
-                    <BsSendFill size={"2em"} />
+                    <BsSendFill size={"1.5em"} />
                     Send
                 </>)}
 

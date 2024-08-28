@@ -15,9 +15,7 @@ const UserMessage = ({text}) => {
     return (
         <ChatMessage
             avatar={
-                <div className={"bg-orange-100/50 p-3 rounded-full"}>
-                    <BsPerson size={"2em"} color={"darkblue"} />
-                </div>
+                <BsPerson size={"1.5em"} color={"darkblue"} />
             }
             orientation={"right"}
             background="from-blue-200/70"

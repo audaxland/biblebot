@@ -16,9 +16,7 @@ const BotMessage = ({text, book, chapter, verse}) => {
     return (
         <ChatMessage
             avatar={
-                <div className={"bg-orange-100/50 p-3 rounded-full"}>
-                    <BsRobot size={"2.5em"} color={"darkred"} />
-                </div>
+                <BsRobot size={"1.5em"} color={"darkred"} />
             }
             background="from-red-200/60"
         >

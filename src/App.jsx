@@ -16,7 +16,7 @@ function App() {
 
     return (
         <div
-            className="flex flex-col items-center justify-center w-full h-screen "
+            className="flex flex-col items-center justify-center w-full h-screen max-w-[1000px] mx-auto"
         >
             {isLoading && (errors.length === 0) && (<LoadingScreen />)}
             {(!isLoading) && (errors.length === 0) && (<ChatUi />)}

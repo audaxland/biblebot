@@ -2,12 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: SedGwick;
+  src: url("./assets/SedgwickAveDisplay-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
 
 body {
   margin: 0;
   display: flex;
   place-items: center;
-  min-width: 320px;
+  min-width: 100vw;
   min-height: 100vh;
   background-color: #f0f0f0;
   background-image: url('/background.jpg');
