@@ -1,12 +1,24 @@
 # BibleBot
 
-A Retrieval Only Chatbot (ROC) that responds with verses from the bible.
+A Retrieval Only Chatbot (ROC) that responds with verses from the bible.  
+It is basically a RAG app without the generation part.  
+The app runs entirely in the browser (without the need for a backend).  
 
-It is basically a RAG app without the generation part.
+The app is build using:
 
-The app runs entirely in the browser (without the need for a backend).
+- reactJs
+- tensorflow.js
+- universal-sentence-encoder 
+- vite
+- tailwindcss
+- parquetjs
+- hyparquet
+- react-icons
+- react-spinners
 
-It is build using reactJs, vite, tensorflow.js, universal-sentence-encoder, tailwindcss, parquetjs and hyparquet
+# Demo
+
+Try out the app at https://biblebot.audaxland.net/
 
 # Usage
 
@@ -46,4 +58,4 @@ npm run preview
 
 # Screenshot
 
-![BibleBot Screenshot](biblebotScreenshot.jpg)
+![BibleBot Screenshot](biblebot-screenshot.jpg)
