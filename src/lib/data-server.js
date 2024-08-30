@@ -39,6 +39,7 @@ export const parseBibleFile = path => {
     return inputFile.map((line, verseIndex) => {
         const extract = line.match(/^([^:]+)\s+(\d+):(\d+)(.*)$/);
         if (!extract) return null; // skip invalid lines
+        if (extract[4].replace(/[^a-zA-Z]/, '').length === 0) return null; // skip other invalid rows
         return {
             verseIndex: verseIndex,
             book: extract[1].trim(),

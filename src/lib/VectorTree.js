@@ -24,12 +24,12 @@ const LEAF_SIZE = 5
 export default class VectorTree
 {
     /**
-     * Initialition of the VectorTree class.
+     * Initialization of the VectorTree class.
      * @constructor
      */
     constructor() {
         /**
-         * this.data contains the orignial content of each item
+         * this.data contains the original content of each item
          * @type {Object[]}
          */
         this.data = []
@@ -98,7 +98,7 @@ export default class VectorTree
      * Break down a group of vectors into random groups of size LEAF_SIZE 
      * and return the average vector from each group. 
      * 
-     * @param {Array} group - The group of vectors to break down into random chunks
+     * @param {Object[]} group - The group of vectors to break down into random chunks
      * @returns {Array} - The average vector of each chunk
      */
     getChunkVectors(group) {
@@ -140,7 +140,7 @@ export default class VectorTree
      *
      * @param {Array} vectors - The array of vectors. (These will become the vectors of the parent nodes)
      * @param {Array} nodes - The array of nodes. (These will become the children of new the parent nodes)
-     * @returns {number[]} - The array nodes indexed that are closest to each vector in the vectors array.
+     * @returns {Object[][]} - The array nodes that are closest to each vector in the vectors array.
      */
     getVectorChildren(vectors, nodes) {
         return tf.tidy(() => {
@@ -174,7 +174,7 @@ export default class VectorTree
         // flag to indicate if the layer is balanced (each node size is between LEAF_SIZE/2 and LEAF_SIZE*2)
         let isValidLayer = false
 
-        // Number of iteration attemps to balance the layer so far
+        // Number of iteration attempts to balance the layer so far
         let tryCount = 0
 
         // the size of the smallest number of children in the nodes of the new parent layer
@@ -218,7 +218,7 @@ export default class VectorTree
                     isValidLayer = false;
                     newParentVectors.push(...this.getChunkVectors(parentChildren[index]))
                 } else if (parentChildren[index].length > Math.ceil(this.leafSize / 2)) {
-                    // nodes with unsufficient children are droped
+                    // nodes with insufficient children are dropped
                     newParentVectors.push(vector)
                 }
             })
@@ -301,13 +301,13 @@ export default class VectorTree
             return tf.squeeze(tf.matMul(vectorStack, tf.expandDims(needleVector).transpose())).arraySync()
         })
 
-        // sort the nodes by decending order of similarity
+        // sort the nodes by descending order of similarity
         const sortedLayer = layer.map((node, index) => ({
             ...node,
             similarity: similarities[index]
         })).sort((a, b) => b.similarity - a.similarity)
 
-        // if we are at the bottom layer, we return the top data items, along with the corresponding simiarity
+        // if we are at the bottom layer, we return the top data items, along with the corresponding similarity
         if (layer[0].layer === 0) {
             return sortedLayer.slice(0, nbResults).map(({dataIndex, similarity}) => ({
                 content: this.data[dataIndex].content,
@@ -380,7 +380,7 @@ export default class VectorTree
      * @returns {Object} - The generated tree structure.
      */
     getTreeFromArray(treeArray) {
-        // split the data by layer number, to optimize coputing the children of each node
+        // split the data by layer number, to optimize computing the children of each node
         const layers = treeArray.reduce((acc, curr) => {
             if (!acc[curr.layer]) acc[curr.layer] = [];
             acc[curr.layer].push(curr);
@@ -392,7 +392,7 @@ export default class VectorTree
 
         
         /**
-         * Local function to compute recusively the children of node
+         * Local function to compute recursively the children of node
          *
          * @param {number} parent - The parent node index.
          * @param {string} searchLayer - The layer to search through.
@@ -407,7 +407,7 @@ export default class VectorTree
                         dataIndex,
                         children: (layer === 0) ? [] : getTreeLayerForParent(vectorIndex, (parseInt(searchLayer) - 1).toString())
                     }
-                    if (dataIndex < 0) delete node.dataIndex; // only inclide the dataIndex in the leaf nodes
+                    if (dataIndex < 0) delete node.dataIndex; // only include the dataIndex in the leaf nodes
                     return node;
                 })
         }

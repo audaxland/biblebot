@@ -89,7 +89,10 @@ export const ChatUi = () => {
                                     'border border-stone-600/90 py-1 px-4 rounded-lg font-bold shadow-sm shadow-stone-600' +
                                     ' bg-stone-300/50 hover:bg-stone-400 hover:shadow-stone-100 text-stone-800 '
                                 }
-                                onClick={e => setMessages([])}
+                                onClick={e => {
+                                    setMessages([])
+                                    setHistory([])
+                                }}
                             >
                                 Clear Chat
                             </button>
