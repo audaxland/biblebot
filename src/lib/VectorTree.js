@@ -317,7 +317,7 @@ export default class VectorTree
 
         // if we are not yet at the bottom layer, 
         // only keep the top nodes to compute the subset of the next layer to search trough
-        const keep = Math.max(this.leafSize, Math.floor(nbResults / (layer[0].layer)))
+        const keep = Math.max(this.leafSize, Math.floor(nbResults))
         return this.getLayerSimilarItems(
             sortedLayer.slice(0, keep).map(node => node.children).flat(),
             needleVector,
@@ -352,7 +352,7 @@ export default class VectorTree
      * @returns {Object[]} The tree as an array.
      */
     getTreeAsArray() {
-        // initialize the array with an emty array that has the correct number of items. 
+        // initialize the array with an empty array that has the correct number of items.
         // note that there is exactly as many vectors than nodes in the tree
         const treeArray = this.vectors.map(() => null)
 

@@ -1,6 +1,6 @@
 /**
  * Renders a chat message in the section of the ui that renders the conversation.
- * This is a generic component that is used for both the user promts and the bot responses, 
+ * This is a generic component that is used for both the user prompts and the bot responses,
  * so its options allow to customize for either user or bot messages to be rendered differently.
  *
  * @component
@@ -32,8 +32,7 @@ const ChatMessage = ({
             <div
                 className={"to-stone-100/80 py-2 px-3 max-w-[80%] rounded-lg border border-stone-300/90 " +
                     (orientation === 'left' ? ' bg-gradient-to-tr ' : ' bg-gradient-to-tl ')
-                    + ' ' + background + ' ' + className
-                }
+                    + ' ' + background + ' ' + className }
             >
                 {children}
             </div>

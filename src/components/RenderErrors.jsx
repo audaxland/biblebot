@@ -17,7 +17,7 @@ const RenderErrors = ({errors = []}) => {
             {errors.map((error, index) => (
                 <div
                     key={index}
-                    className="p-4 m-2 bg-red-100"
+                    className="p-4 m-2 bg-red-100 roundex-lg"
                 >
                     {error}
                 </div>

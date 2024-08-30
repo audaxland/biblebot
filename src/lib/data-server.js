@@ -37,9 +37,9 @@ export const logger = (...messages) => {
 export const parseBibleFile = path => {
     const inputFile = fs.readFileSync(path, 'utf8').split('\n');
     return inputFile.map((line, verseIndex) => {
-        const extract = line.match(/^([^:]+)\s+(\d+):(\d+)(.*)$/);
+        const extract = line.match(/^([^:]+)\s+(\d+):(\d+)(.*[a-zA-Z]+.*)$/);
         if (!extract) return null; // skip invalid lines
-        if (extract[4].replace(/[^a-zA-Z]/, '').length === 0) return null; // skip other invalid rows
+        if (extract[4].replace(/[^a-zA-Z]+/, '').length === 0) return null; // skip other invalid rows
         return {
             verseIndex: verseIndex,
             book: extract[1].trim(),
@@ -85,11 +85,11 @@ export const getVectors = async ({
         // add previous and following items to the text to provide context for the embedding
         const textWithContext = orderedData.slice(Math.max(parseInt(k) - overlap, 0), parseInt(k) + overlap + 1)
             .filter(i => (!overlapFiler) || overlapFiler(i, item))
-            .map(i => getText(i))
+            .map(i => (i.verseIndex === item.verseIndex ? getText(i) + ' ' + getText(i)  : getText(i)))
             .join(' ')
 
         // embed the text, here we duplicate the items' text to provide more weight to the current item than to the surrounding context
-        const vector = await model.embed(textWithContext + '.\n\n' + text)
+        const vector = await model.embed(text + '.\n' + textWithContext + '.\n' + text)
 
         // convert from tensor to javascript array
         const vectorArray = (vector.arraySync()[0]);

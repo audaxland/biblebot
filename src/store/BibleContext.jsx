@@ -72,7 +72,7 @@ export const BibleContextProvider = ({children}) => {
                 setErrors(old => [...old, errorMessage])
                 console.error('Error loading the data file: ', e)
             }
-            setIsLoading(false)
+            setTimeout(() => setIsLoading(false), 500)
         })();
 
         // the model contains tensorflow tensors that the garbage collector does not necessarily handle correctly,

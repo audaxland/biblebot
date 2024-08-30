@@ -1,11 +1,11 @@
 {
-  "timeStamp": 1724980877031,
+  "timeStamp": 1724994853481,
   "files": {
     "bible.json": {
-      "sha256hex": "bb221081b73610841c959d72fdb0f05f4524007b98350416fa7e154fbd977368"
+      "sha256hex": "6a227b5ccdc1602565a3b0364189beb5ceccb1498a83f2b4ee4f6be7a279a71f"
     },
     "bible.parquet": {
-      "sha256hex": "392d404b29963c3d3a0ba14ef582cd6b7f2b96f4a348221f1b1446ca3bbf6fd9"
+      "sha256hex": "9d762caef00ad4942f101f2a54ce3984aab87fe94f0fe1527a0262dbb79308ae"
     }
   }
 }
