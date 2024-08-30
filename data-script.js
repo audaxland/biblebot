@@ -6,11 +6,14 @@
  */
 import fs from 'fs';
 import * as process from "process";
-import {getFileHash, getVectors, logger, parseBibleFile, writeParquetFile} from './src/lib/data-server.js'
+import {getFileHash, getVectors, logger, parseBibleFile} from './src/lib/data-server.js'
 import * as path from "node:path";
+import VectorTreeNode from "./src/lib/VectorTreeNode.js";
 
 
 logger("Running the data computing script. Start time: ", (new Date()).toTimeString());
+logger("This script will create a static parquet file that contains the vectors and the data \n" +
+    "It only needs to be ran once, and takes about 20 minutes to execute on a i7 CPU")
 
 // absolute path to the root directory of the project
 const rootDir = process.cwd();
@@ -38,7 +41,7 @@ const versionsFilePath = rootDir + '/public/versions.json';
     // convert the text input file in a parsed array of object {book, chapter, verse, text}
     const inputData = parseBibleFile(inputFilePath);
     fs.writeFileSync(parsedFilePath, JSON.stringify(inputData, null, 2));
-    dataVersions.files[path.basename(parsedFilePath)] = getFileHash(parquetFilePath);
+    dataVersions.files[path.basename(parsedFilePath)] = getFileHash(parsedFilePath);
     logger('Input file parsed.');
 
     // computes the vectors for each verse. The vectors are computed using the Universal Sentence Encoder.
@@ -50,17 +53,32 @@ const versionsFilePath = rootDir + '/public/versions.json';
     });
     logger('Vectorization completed.');
 
-    // write the vectors and the data to a parquet file.
-    await writeParquetFile(
-        inputData, 
-        vectors, 
-        parquetFilePath, 
-        (i, item) => {if (i%10000 === 0) logger(i + ' rows written in parquet file.')}
-    );
-    dataVersions.files[path.basename(parquetFilePath)] = getFileHash(parquetFilePath)
-    logger('Parquet file created.');
+    // the vectorTree will contain all the data with the corresponding vectors and the tree structure to search later
+    const vectorTree = new VectorTreeNode()
+    inputData.forEach((content, index) => {
+        vectorTree.insert(content, vectors[index])
+    });
+
+    logger('VectorTree initialized.');
+
+    // we optimize the tree on the server, because this takes typically 20 minutes and only needs to be done once
+    vectorTree.optimize((isValidLayer, {layer,length, tryCount, maxSize}) => {
+        if (isValidLayer) {
+            logger(`Tree layer ${layer} optimized: (rounds: ${tryCount}, nodes: ${length}, maxSize: ${maxSize})`)
+        } else if((tryCount % 5 === 0)) {
+            logger(`Optimizing tree layer ${layer}: (rounds: ${tryCount}, nodes: ${length}, maxSize: ${maxSize})`)
+        }
+    })
+
+    logger('VectorTree Optimized.')
+
+    // save the vectorTree as a static  parquet file that the app will load from the browser
+    await vectorTree.exportToParquet(parquetFilePath)
+
+    logger('Parquet file created.')
 
     // write the versions file
+    dataVersions.files[path.basename(parquetFilePath)] = getFileHash(parquetFilePath)
     fs.writeFileSync(versionsFilePath, JSON.stringify(dataVersions, null, 2));
     logger('Versions file created');
 

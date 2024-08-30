@@ -4,9 +4,9 @@
  * and provides helper functions to retrieve the data.
  */
 import {createContext, useContext, useEffect, useState} from "react";
-import {getBestVector, getParquetData} from "../lib/data-client.js";
 import * as encoder from '@tensorflow-models/universal-sentence-encoder';
 import * as tf from '@tensorflow/tfjs';
+import VectorTree from "../lib/VectorTree.js";
 
 
 // The url where the vector file is located.
@@ -17,13 +17,13 @@ const dataFile = '/data/bible.parquet';
  * @desc The BibleContext provides the bible data and vectors.
  * @typedef {Object} BibleContext
  * @property {boolean} isLoading - True until the vector file has been fetched and loaded.
- * @property {Function} getResponseFor - A function that retrieves a best verse for a given text input.
+ * @property {Function} getBestResponses - A function that retrieves the top best verses for a given text input.
  * @property {Array} error - An array that stores any error messages to be rendered to the UI.
  */
 export const BibleContext = createContext({
     isLoading: true,
-    getResponseFor: async text => {},
-    error: [],
+    getBestResponses: async () => {},
+    errors: [],
 });
 
 
@@ -42,10 +42,9 @@ export const BibleContextProvider = ({children}) => {
     const [isLoading, setIsLoading] = useState(true);
 
     /**
-     * @type {Array} data: array of objects {item, vector} representing the verses from the bible.
+     * @type {VectorTree} vectorTree: the vector tree containing the bible data and all the vector logic
      */
-    const [data, setData] = useState([])
-
+    const [vectorTree, setVectorTree] = useState(null);
 
     /**
      * @type {Object} model: the Universal Sentence Encoder model.
@@ -61,9 +60,11 @@ export const BibleContextProvider = ({children}) => {
     useEffect(() => {
         (async () => {
             setIsLoading(true)
+            const vectorTreeInstance = new VectorTree();
+            setVectorTree(vectorTreeInstance)
             try {
                 await Promise.all([
-                    (async () => {setData((await getParquetData(dataFile)))})(), // fetch the vector data file
+                    (async () => {await vectorTreeInstance.importTreeFromUrl(dataFile)})(),
                     (async () => {setModel((await encoder.load()))})(), // load the Universal Sentence Encoder model
                 ]);
             } catch (e) {
@@ -81,22 +82,22 @@ export const BibleContextProvider = ({children}) => {
 
 
     /**
-     * Retrieves the response for a given query.
-     * This will return the closes vector within a random subset of the data.
-     * @param {string} query - The text query to get the best verse for. 
-     * @returns {Promise<any>} - Returns a semi-best verse for the given query.
+     * getBestResponses() - Retrieve the responses with the closes vectors to the query.
+     * @param {string} query: the text input for which to retrieve the best responses
+     * @param {number} nbResults: the number of results to return
+     * @returns 
      */
-    const getResponseFor = async query => {
-        // computing the closes vector is a slow process, so we only use a random subset of the data.
-        const randomDataset = data.sort((a, b) => Math.random() - 0.5).slice(0, 3000)
-        const bestVector = await getBestVector(model, randomDataset.map(i => i.vector), query)
-        return randomDataset[bestVector].item
+    const getBestResponses = async (query, nbResults = null) => {
+        const queryVector = await model.embed(query);
+        const results = vectorTree.getSimilarItems(queryVector.arraySync(), nbResults)
+        queryVector.dispose()
+        return results
     }
 
     return (
         <BibleContext.Provider value={{
             isLoading,
-            getResponseFor,
+            getBestResponses,
             errors
         }}>
             {children}

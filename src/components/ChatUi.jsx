@@ -23,9 +23,15 @@ export const ChatUi = () => {
     const [messages, setMessages] = useState([]);
 
     /**
+     * @type {Array} history - An array of verse indices that have already been used in the conversation. 
+     *                          Used to prevent returning the same verse multiple times.
+     */
+    const [history, setHistory] = useState([]);
+
+    /**
      * @type {Function} getResponseFor - A function that retrieves a best verse for a given text input.
      */
-    const {getResponseFor} = useBibleContext();
+    const {getBestResponses} = useBibleContext();
 
     
     /**
@@ -35,8 +41,15 @@ export const ChatUi = () => {
      */
     const onSend = async input => {
         setMessages(old => [...old, {type: "user", text: input}]);
-        const botResponse = await getResponseFor(input)
-        setMessages(old => [...old, {type: 'bot', ...botResponse}]);
+        // Get the 400 best responses for the input.
+        // This number needs to be high enough to have a better chance of finding the best response,
+        // as we only compare a subset of all the verses. 
+        // But This also needs to be low enough to not slow down the response time too much.
+        const botResponses = (await getBestResponses(input, 400)).map(i => i.content)
+        // Select the best verse that has not yet been returned in the current conversation
+        const selectedResponse = botResponses.find(i => !history.includes(i.verseIndex)) || botResponses[0]
+        setMessages(old => [...old, {type: 'bot', ...selectedResponse}]);
+        setHistory(old => [...old, selectedResponse.verseIndex]);
     }
 
     /**
@@ -46,7 +59,9 @@ export const ChatUi = () => {
 
     // Auto-scroll to the bottom of the chat when new messages are added.
     useEffect(() => {
-        bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+        if (messages.length > 0) {
+            bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }
     }, [messages])
 
     return (
@@ -54,12 +69,12 @@ export const ChatUi = () => {
             <div
                 className={"flex flex-col w-full h-full"}
             >
+                {/* Chat header - with branding and "clear" button */}
                 <div
                     className={
                         "bg-gradient-to-b from-yellow-700/30 to-stone-700/50 py-2 flex flex-row px-5 items-center"
                         + (messages.length > 0 ? ' justify-between ' : ' justify-center ')
                     }
-
                 >
                     <h1 className={
                         "app-name-font text-red-900 font-bold text-lg sm:text-2xl md:text-4xl px-4 py-1 sm:py-2 " +
@@ -82,7 +97,8 @@ export const ChatUi = () => {
                     </div>
 
                 </div>
-
+                
+                {/* Chat conversation area */}
                 <div className={"flex-1 px-1 sm:px-4 overflow-auto h-fit"} >
                     {/* Text to render before the user has provided the first prompt */}
                     {(messages.length === 0) && (
@@ -102,6 +118,7 @@ export const ChatUi = () => {
                     <div ref={bottomRef}></div>
                 </div>
 
+                {/* Chat input area */}
                 <div className={"bg-gradient-to-b to-yellow-700/30 from-stone-700/50 py-2"}>
                     <ChatInputArea onSend={onSend} />
                 </div>

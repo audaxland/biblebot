@@ -35,10 +35,10 @@ const ChatInputArea = ({onSend}) => {
      */
     const onSubmit = async (e) => {
         e.preventDefault();
+        if (input.trim() === "") return;
         setSending(true);
         // the onSend function handles the submission at the parent level.
         onSend && await onSend(input);
-        setInput('');
         setSending(false);        
     }
 
@@ -47,9 +47,13 @@ const ChatInputArea = ({onSend}) => {
      */
     useEffect(() => {
         if ((!sending) && inputRef.current) {
+            // handling the textarea by reference rather than value to improve the performance when first loading the app
+            inputRef.current.value = ''
+            setInput('')
+            // We need a timeout to only set the focus after the textarea disabled property has been set to false
             setTimeout(() => {
                 inputRef.current.focus();
-            }, 100);
+            }, 10);
         }
     }, [sending])
 
@@ -64,7 +68,6 @@ const ChatInputArea = ({onSend}) => {
                 onChange={e=>setInput(e.target.value)}
                 onKeyUp={e=> e.key === 'Enter' && onSubmit(e)}
                 disabled={sending}
-                value={input}
                 placeholder="Ask anything..."
                 ref={inputRef}
             ></textarea>
@@ -85,7 +88,7 @@ const ChatInputArea = ({onSend}) => {
 
                 {/* spinner to render while handing the submitted prompt */}
                 {sending && (<>
-                    <div><ClipLoader color={"silver"} size={'2em'}/></div>
+                    <div><ClipLoader color={"silver"} size={'1.5em'}/></div>
                     Sending
                 </>)}
             </button>

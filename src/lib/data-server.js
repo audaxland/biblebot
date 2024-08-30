@@ -4,7 +4,6 @@
 import fs from 'fs';
 import * as encoder from '@tensorflow-models/universal-sentence-encoder';
 import * as tf from '@tensorflow/tfjs-node';
-import parquetjs from 'parquetjs';
 import crypto from "crypto";
 
 
@@ -108,58 +107,6 @@ export const getVectors = async ({
 
     return vectors;
 }
-
-/**
- * Combine the item object with the corresponding vector array as an object without nesting.
- * This is done to prepare the data for writing to a Parquet file.
- * 
- * @param {Object} item - The item object to be combined.
- * @param {Array} vector - The vector array to be combined with the item object.
- * @returns {Object} - The combined item object.
- */
-const combineItemAndVector = (item, vector) => {
-    const combinedItem = {...item}
-    vector.forEach((v,index) => {combinedItem['v_' + index] = v})
-    return combinedItem
-}
-
-
-/**
- * Writes data and the corresponding vectors to a Parquet file.
- * 
- * @param {Array} data - The data to be written to the Parquet file.
- * @param {Array} vectors - The vectors to be combined with the data.
- * @param {string} filePath - The file path where the Parquet file will be written.
- * @param {function} [progressCallback=null] - Optional callback function to track progress.
- * @returns {Promise<void>} - A promise that resolves when the Parquet file is written successfully.
- * @throws {Error} - If there is an error writing the Parquet file.
- */
-export const writeParquetFile = async (data, vectors, filePath, progressCallback = null) => {
-    try {
-
-        // Generate the schema for the Parquet file based on the first item and its vector
-        const schemaDetails = Object.entries(combineItemAndVector(data[0], vectors[0]))
-            .reduce((acc, [key, value]) => {
-                if (key.substring(0, 2) === 'v_') acc[key] = {type: 'FLOAT', compression: 'GZIP'}; // vector fields need to be stored as floats
-                else acc[key] = {type: (typeof value == 'number') ? 'INT32' : 'UTF8', compression: 'GZIP'} // other numeric fields here are expected to be integers
-                return acc
-            }, {})
-        const parquetSchema = new parquetjs.ParquetSchema(schemaDetails)
-
-        const parquetWriter = await parquetjs.ParquetWriter.openFile(parquetSchema, filePath);
-        for (const index in data) {
-            const item = combineItemAndVector(data[index], vectors[index])
-            await parquetWriter.appendRow(item);
-            // the progress callback can be used to monitor the progress of the writing to the parquet file.
-            if (progressCallback) progressCallback(index, item)
-        }
-        await parquetWriter.close()
-    } catch (e) {
-        logger('parquet error: ', e)
-    }
-
-}
-
 
 /**
  * Calculates the SHA256 hash of a file.
