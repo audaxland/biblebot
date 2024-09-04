@@ -45,7 +45,7 @@ export const ChatUi = () => {
         // This number needs to be high enough to have a better chance of finding the best response,
         // as we only compare a subset of all the verses. 
         // But This also needs to be low enough to not slow down the response time too much.
-        const botResponses = (await getBestResponses(input, 400)).map(i => i.content)
+        const botResponses = (await getBestResponses(input, 300)).map(i => i.content)
         // Select the best verse that has not yet been returned in the current conversation
         const selectedResponse = botResponses.find(i => !history.includes(i.verseIndex)) || botResponses[0]
         setMessages(old => [...old, {type: 'bot', ...selectedResponse}]);

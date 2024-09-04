@@ -54,7 +54,7 @@ export default class VectorTree
         /**
          * The maximum number of nodes to have at the top layer
          */
-        this.topLayerSize = 200
+        this.topLayerSize = 800
     }
 
 
