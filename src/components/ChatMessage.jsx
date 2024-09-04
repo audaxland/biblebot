@@ -25,7 +25,7 @@ const ChatMessage = ({
                 (orientation === 'left' ? ' flex-row ' : ' flex-row-reverse ')}
         >
             <div>
-                <div className={"bg-orange-100/50 p-1 sm:p-3 rounded-full text-md sm:text-xl md:text-3xl "}>
+                <div className={"bg-orange-100/50 p-1 sm:p-3 rounded-full text-md sm:text-lg md:text-xl "}>
                     {avatar}
                 </div>
             </div>
