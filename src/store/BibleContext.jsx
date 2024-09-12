@@ -72,7 +72,7 @@ export const BibleContextProvider = ({children}) => {
                 setErrors(old => [...old, errorMessage])
                 console.error('Error loading the data file: ', e)
             }
-            setTimeout(() => setIsLoading(false), 500)
+            setTimeout(() => setIsLoading(false), 1000)
         })();
 
         // the model contains tensorflow tensors that the garbage collector does not necessarily handle correctly,
@@ -83,9 +83,9 @@ export const BibleContextProvider = ({children}) => {
 
     /**
      * getBestResponses() - Retrieve the responses with the closes vectors to the query.
-     * @param {string} query: the text input for which to retrieve the best responses
-     * @param {number} nbResults: the number of results to return
-     * @returns 
+     * @param query {string} : the text input for which to retrieve the best responses
+     * @param nbResults {number} : the number of results to return
+     * @returns
      */
     const getBestResponses = async (query, nbResults = null) => {
         const queryVector = await model.embed(query);
